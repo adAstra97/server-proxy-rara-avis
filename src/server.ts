@@ -234,8 +234,8 @@ app.use(
   }),
 )
 
-app.use(express.json({ limit: "500mb" }))
-app.use(express.urlencoded({ limit: "500mb", extended: true }))
+app.use(express.json({ limit: "250mb" }))
+app.use(express.urlencoded({ limit: "250mb", extended: true }))
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -247,7 +247,7 @@ const upload = multer({
     },
   }),
   limits: {
-    fileSize: 100 * 1024 * 1024, // 100MB max file size
+    fileSize: 50 * 1024 * 1024, // 50MB max file size
   },
 })
 
@@ -364,16 +364,16 @@ app.post("/api/upload-file", upload.single("file"), async (req, res) => {
     )
 
     // Validate file size
-    const maxSize = fileType === "image" ? 10 * 1024 * 1024 : 100 * 1024 * 1024
+    const maxSize = fileType === "image" ? 10 * 1024 * 1024 : 50 * 1024 * 1024
     if (file.size > maxSize) {
       uploadStatuses.set(uploadId, {
         ...uploadStatuses.get(uploadId)!,
         status: "error",
-        error: `File too large. ${fileType === "image" ? "Images" : "Videos"} must be under ${fileType === "image" ? "10MB" : "100MB"}.`,
+        error: `File too large. ${fileType === "image" ? "Images" : "Videos"} must be under ${fileType === "image" ? "10MB" : "50MB"}.`,
       })
 
       res.status(400).json({
-        error: `File too large. ${fileType === "image" ? "Images" : "Videos"} must be under ${fileType === "image" ? "10MB" : "100MB"}.`,
+        error: `File too large. ${fileType === "image" ? "Images" : "Videos"} must be under ${fileType === "image" ? "10MB" : "50MB"}.`,
       })
       return
     }
@@ -866,7 +866,7 @@ async function createStagedUpload(
 
   // Проверка максимального размера файла
   const fileSize = fs.statSync(filePath).size
-  const MAX_VIDEO_SIZE = 100 * 1024 * 1024 // 100MB
+  const MAX_VIDEO_SIZE = 50 * 1024 * 1024 // 50MB
 
   if (resource === "VIDEO" && fileSize > MAX_VIDEO_SIZE) {
     throw new Error(`Video file exceeds maximum size of ${MAX_VIDEO_SIZE / 1024 / 1024}MB`)
